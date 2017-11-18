@@ -6,13 +6,23 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
-      name: 'landing-page',
-      component: require('@/components/LandingPage').default
+      path: '/timetracking',
+      name: 'timetracking',
+      component: require('@/components/Timetracking').default
+    },
+    {
+      path: '/setting',
+      name: 'setting',
+      component: require('@/components/Setting').default
+    },
+    {
+      path: '/analysis',
+      name: 'analysis',
+      component: require('@/components/Analysis').default
     },
     {
       path: '*',
-      redirect: '/'
+      redirect: '/timetracking'
     }
   ]
 })
