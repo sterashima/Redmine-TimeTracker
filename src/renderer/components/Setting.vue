@@ -22,7 +22,7 @@
                         <v-card-text><h3>Login type</h3></v-card-text>
                         <v-radio-group v-model="type" row>
                             <v-radio label="BASIC" value="basic" selected></v-radio>
-                            <v-radio label="API Key" value="api" disabled></v-radio>
+                            <v-radio label="API Key" value="api"></v-radio>
                         </v-radio-group>
                         <div v-if="type == 'basic'">
                             <v-text-field
