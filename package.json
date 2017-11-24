@@ -1,6 +1,6 @@
 {
   "name": "redmine-time-tracker",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "author": "sterashima <sterashima78@gmail.com>",
   "description": "Time Tracker for Redmine",
   "license": "MIT",
