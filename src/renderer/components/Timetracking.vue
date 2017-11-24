@@ -36,12 +36,12 @@
     <v-dialog v-model="tracking" persistent max-width="80%">
       <v-card>
         <v-card-title class="headline">Time Tracking Now...</v-card-title>
-        <v-card-text><b>Start       :</b> {{formatedStartTime}}</v-card-text>
-        <v-card-text><b>Elapsed Time:</b> {{formatedElapsedTime}}</v-card-text>
+        <v-card-text style="font-size:1.5em"><b>開始時刻:</b> {{formatedStartTime}}</v-card-text>
+        <v-card-text style="font-size:1.5em"><b>経過時間:</b> {{formatedElapsedTime}}</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="green darken-1" flat @click.native="tracking = false">Cancel</v-btn>
-          <v-btn color="green darken-1" flat @click.native="save">Save</v-btn>
+          <v-btn color="primary" @click.native="save">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

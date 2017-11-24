@@ -16,7 +16,7 @@
             >
             <template slot="items" slot-scope="props">
               <td>{{ props.item.project }}</td>
-              <td>{{ props.item.issue }}</td>
+              <td>{{ mapIssueName(props.item.issue) }}</td>
               <td>{{ props.item.user }}</td>
               <td>{{ props.item.activity }}</td>
               <td class="text-xs-right">{{ props.item.hours }}</td>
@@ -33,8 +33,7 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex'
-const { mapState, mapActions } = createNamespacedHelpers('TimeEntries')
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'analysis',
@@ -42,8 +41,11 @@ export default {
     this.updateTimeEntries()
   },
   computed:{
-    ...mapState({
+    ...mapState('TimeEntries', {
       timeEntriesByDate: state => state.timeEntriesByDate
+    }),
+    ...mapState('Projects', {
+      issues: state => state.issues
     })
   },
   data(){
@@ -62,9 +64,13 @@ export default {
   },
   components: {  },
   methods: {
-    ...mapActions([
+    ...mapActions('TimeEntries', [
       'updateTimeEntries'
     ]),
+    mapIssueName(id){
+      if(!id || !this.issues[id]) return ''
+      return `${this.issues[id].subject} (ID: ${id})`
+    },
     sumTimes(timeEntries){
       return timeEntries.reduce((sum, entry)=>{
         return sum + entry.hours
