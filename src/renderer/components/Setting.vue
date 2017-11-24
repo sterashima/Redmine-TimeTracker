@@ -108,7 +108,7 @@ export default {
             this.loading = true
             try{
                 const client = this.createRedmineClient({
-                    url: this.url,
+                    apiKey: this.apiKey,
                     password: this.password,
                     user: this.user,
                     url: this.url,

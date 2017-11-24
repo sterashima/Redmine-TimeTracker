@@ -10,11 +10,11 @@ const state = {
 
 const mutations = {
     SET_LOGIN_BY_APIKEY (state, setting) {
-        state.apikey = setting.apikey
+        state.apiKey = setting.apiKey
         state.url = setting.url
         state.type = setting.type
         localStorage.setItem('login-setting', JSON.stringify({
-            apikey: setting.apikey,
+            apiKey: setting.apiKey,
             url: setting.url,
             type: setting.type
         }))

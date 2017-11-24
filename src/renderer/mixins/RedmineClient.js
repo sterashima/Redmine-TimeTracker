@@ -13,11 +13,12 @@ export default {
             if(url == '') throw new Error();
             const config = {format: 'json'}
             if('api' == type){
-                config.apikey = apiKey
+                config.apiKey = apiKey
             }else if('basic' == type){
                 config.username = user
                 config.password = password
             }
+            console.log(config)
             return new Redmine(url, config);
         }
     }

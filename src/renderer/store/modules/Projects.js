@@ -20,7 +20,7 @@ const actions = {
         if(rootState.Setting.url == '') throw new Error();
         const config = {format: 'json'}
         if('api' == rootState.Setting.type){
-            config.apikey = rootState.Setting.apiKey
+            config.apiKey = rootState.Setting.apiKey
         }
         else if('basic' == rootState.Setting.type){
             config.username = rootState.Setting.user

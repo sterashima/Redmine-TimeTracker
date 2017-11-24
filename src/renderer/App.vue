@@ -6,7 +6,7 @@
         <v-btn icon :to="{path: 'setting'}" ><v-icon color="red">settings</v-icon></v-btn>
         <v-btn icon :to="{path: 'analysis'}"><v-icon color="red">show_chart</v-icon></v-btn>
         <v-spacer></v-spacer>
-        <v-btn icon><v-icon color="black">autorenew</v-icon></v-btn>
+        <v-btn icon @click.native="reload"><v-icon color="black">autorenew</v-icon></v-btn>
       </v-toolbar>
       <v-content>
         <v-container fluid>
@@ -22,9 +22,19 @@
 </template>
 
 <script>
-  export default {
-    name: 'redmine-time-tracker'
+import { mapActions } from 'vuex'
+
+export default {
+  name: 'redmine-time-tracker',
+  methods:{
+    ...mapActions('Projects',['updateProjects']),
+    ...mapActions('TimeEntries', ['updateTimeEntries']),
+    reload(){
+      this.updateProjects()
+      this.updateTimeEntries()
+    }
   }
+}
 </script>
 
 <style>
