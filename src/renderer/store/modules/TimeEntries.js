@@ -15,8 +15,8 @@ const commentParse = (comment)=>{
       const from = new Date(time.from)
       const to = new Date(time.to)
       return {
-        from: `${from.toDateString()} ${from.toTimeString()}`,
-        to: `${to.toDateString()} ${to.toTimeString()}`,
+        from: `${from.toLocaleDateString('ja-JP')} ${from.toLocaleTimeString('ja-JP')}`,
+        to: `${to.toLocaleDateString('ja-JP')} ${to.toLocaleTimeString('ja-JP')}`,
         comment: match[1] + match[3]
       }  
     }

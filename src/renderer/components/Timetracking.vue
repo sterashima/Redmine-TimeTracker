@@ -98,7 +98,7 @@ export default {
     formatedStartTime(){
       if(!this.startTimeMilli) return ''
       const date = new Date(this.startTimeMilli)
-      return `${date.toDateString()} ${date.toTimeString()}`
+      return `${date.toLocaleDateString('ja-JP')} ${date.toLocaleTimeString('ja-JP')}`
     },
     projectSelecter(){
       return Object.keys(this.projects).map((id)=>{
