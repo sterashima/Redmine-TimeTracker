@@ -22,7 +22,7 @@
               <td class="text-xs-right">{{ props.item.hours }}</td>
               <td>{{ props.item.from }}</td>
               <td>{{ props.item.to }}</td>
-              <td>{{ props.item.comment }}</td>
+              <td><pre>{{ props.item.comment }}</pre></td>
             </template>
           </v-data-table>
           </v-expansion-panel-content>

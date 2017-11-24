@@ -38,10 +38,19 @@
         <v-card-title class="headline">Time Tracking Now...</v-card-title>
         <v-card-text style="font-size:1.5em"><b>開始時刻:</b> {{formatedStartTime}}</v-card-text>
         <v-card-text style="font-size:1.5em"><b>経過時間:</b> {{formatedElapsedTime}}</v-card-text>
+        <v-card-text>
+           <v-text-field
+              label="コメント(100文字)"
+              :rules="[(v) => v.length <= 100 || 'Max 100 characters']"
+              :counter="100"
+              v-model="comment"
+              multi-line
+            ></v-text-field>
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="green darken-1" flat @click.native="tracking = false">Cancel</v-btn>
-          <v-btn color="primary" @click.native="save">Save</v-btn>
+          <v-btn color="primary" @click.native="save" :disabled="comment.length > 100">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -57,7 +66,7 @@
 </template>
 
 <script>
-
+import RedmineClient from '@/mixins/RedmineClient'
 import { createNamespacedHelpers } from 'vuex'
 const { mapState, mapActions, mapGetters } = createNamespacedHelpers('Projects')
 export default {
@@ -65,6 +74,7 @@ export default {
   mounted(){
     this.updateProjects()
   },
+  mixins:[RedmineClient],
   data(){
     return {
       selectedProjectId: null,
@@ -74,6 +84,8 @@ export default {
       tracking: false,
       startTimeMilli: null,
       elapsedTimeMilli: 0,
+
+      comment: "",
 
       alartColor: "success",
       alartIsShow: false,
@@ -144,7 +156,7 @@ export default {
         const config = {
           hours: elapsedTime / 1000 / 3600,
           activity_id: this.selectedActivityId,
-          comments: JSON.stringify({from: this.startTimeMilli, to: parseInt(this.startTimeMilli) + parseInt(elapsedTime)})
+          comments: this.comment +"\n"+ JSON.stringify({from: this.startTimeMilli, to: parseInt(this.startTimeMilli) + parseInt(elapsedTime)})
         }
         if(this.selectedIssueId){
           config.issue_id = this.selectedIssueId

@@ -18,7 +18,6 @@ export default {
                 config.username = user
                 config.password = password
             }
-            console.log(config)
             return new Redmine(url, config);
         }
     }

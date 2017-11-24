@@ -10,15 +10,16 @@ const commentParse = (comment)=>{
       }
     }
     let match;
-    if(match = comment.match(/(^.*)(\{\"from\".+?\})(.*)/)){
-      const time = JSON.parse(match[2])
-      const from = new Date(time.from)
-      const to = new Date(time.to)
-      return {
-        from: `${from.toLocaleDateString('ja-JP')} ${from.toLocaleTimeString('ja-JP')}`,
-        to: `${to.toLocaleDateString('ja-JP')} ${to.toLocaleTimeString('ja-JP')}`,
-        comment: match[1] + match[3]
-      }  
+    if(match = comment.match(/^([\s\S]*)(\{\"from\".+?\})([\s\S]*)$/m)){
+        console.log(match)
+        const time = JSON.parse(match[2])
+        const from = new Date(time.from)
+        const to = new Date(time.to)
+        return {
+            from: `${from.toLocaleDateString('ja-JP')} ${from.toLocaleTimeString('ja-JP')}`,
+            to: `${to.toLocaleDateString('ja-JP')} ${to.toLocaleTimeString('ja-JP')}`,
+            comment: match[1] + match[3]
+        }  
     }
     return {
       from: '',
