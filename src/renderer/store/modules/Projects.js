@@ -1,45 +1,65 @@
-// const Setting = (localStorage.getItem('login-setting')) ? JSON.parse(localStorage.getItem('login-setting')) : {}
+import {remote} from 'electron'
+const Redmine = remote.require('node-redmine')
 
 const state = {
-    projects: []
+    projects: {},
+    issues: {}
 }
 
 const mutations = {
-    // SET_LOGIN_BY_APIKEY (state, setting) {
-    //     state.apikey = setting.apikey
-    //     state.url = setting.url
-    //     state.type = setting.type
-    //     localStorage.setItem('login-setting', JSON.stringify({
-    //         apikey: setting.apikey,
-    //         url: setting.url,
-    //         type: setting.type
-    //     }))
-    // },
-    // SET_LOGIN_BY_PASS (state, setting) {
-    //     state.user = setting.user
-    //     state.password = setting.password
-    //     state.url = setting.url
-    //     state.type = setting.type
-    //     localStorage.setItem('login-setting', JSON.stringify({
-    //         apikey: setting.apikey,
-    //         password: setting.password,
-    //         user: setting.user,
-    //         type: setting.type
-    //     }))
-    // },
+    SET_PROJECTS (state, projects){
+        state.projects = projects
+    },
+    SET_ISSUES (state, issues){
+        state.issues = issues
+    }
 }
 
 const actions = {
-    someAsyncTask ({ commit }) {
-        // do something async
-        commit('INCREMENT_MAIN_COUNTER')
+    updateProjects ({ commit, rootState }) {
+        if(rootState.Setting.url == '') throw new Error();
+        const config = {format: 'json'}
+        if('api' == rootState.Setting.type){
+            config.apikey = rootState.Setting.apiKey
+        }
+        else if('basic' == rootState.Setting.type){
+            config.username = rootState.Setting.user
+            config.password = rootState.Setting.password
+        }
+        else{
+            throw new Error();
+        }
+        try{
+            const client = new Redmine(rootState.Setting.url, config);
+            client.projects({include: "time_entry_activities"}, (err, data)=> {
+              const projects = data.projects.reduce((obj, project)=>{
+                    obj[project.id] = project
+                    return obj
+              }, {})
+              commit('SET_PROJECTS', projects)
+            })
+
+            client.issues({status_id: 'open'}, (err, data)=> {
+                const issues = data.issues.reduce((obj, issue)=>{
+                    obj[issue.id] = issue
+                    return obj
+                }, {})
+                commit('SET_ISSUES', issues)
+            })
+
+        }catch(err){
+            console.log(err)
+        }
     }
 }
+
+const getters = {}
 
 export default {
     namespaced: true,
     state,
     mutations,
-    actions
+    actions,
+    getters
 }
   

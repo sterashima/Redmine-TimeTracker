@@ -57,20 +57,20 @@
 </template>
 
 <script>
-import RedmineClient from '@/mixins/RedmineClient'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapState, mapActions, mapGetters } = createNamespacedHelpers('Projects')
 export default {
   name: 'time-tracking',
   mounted(){
-    this.fetchProjects()
+    this.updateProjects()
   },
-  mixins:[RedmineClient],
   data(){
     return {
-      projects: {},
-      issues: {},
       selectedProjectId: null,
       selectedIssueId: null,
       selectedActivityId: null,
+
       tracking: false,
       startTimeMilli: null,
       elapsedTimeMilli: 0,
@@ -81,6 +81,10 @@ export default {
     }
   },
   computed:{
+    ...mapState({
+      projects: state => state.projects,
+      _issues: state => state.issues,
+    }),
     isTrackingReady(){
       return !!this.selectedProjectId && !!this.selectedActivityId
     },
@@ -120,14 +124,20 @@ export default {
         return {value: id, text: `(ID: ${id}) ${this.issues[id].subject}`}
       })
     },
-  },
-  watch:{
-    selectedProjectId: function(newVal){
-      if(!newVal) return
-      this.fetchIssues(newVal)
+    issues(){
+      if(!this.selectedProjectId) return {}
+      return Object.keys(this._issues).reduce((obj, key)=>{
+        const issue = this._issues[key]
+        if(issue.project.id != this.selectedProjectId) return obj
+        obj[issue.id] = issue
+        return obj
+      }, {})
     }
   },
   methods: {
+    ...mapActions([
+      "updateProjects"
+    ]),
     save(){
       try{
         const elapsedTime = this.elapsedTimeMilli
@@ -157,7 +167,6 @@ export default {
         this.alartIsShow = true
         console.log(error)
       }
-      
     },
     startTimeTrack(){
       this.startTimeMilli = Date.now()
@@ -167,29 +176,6 @@ export default {
         this.elapsedTimeMilli = Date.now() - this.startTimeMilli
       },100)
     },
-    fetchIssues(project_id){
-      const client = this.createRedmineClient()
-      client.issues({project_id: project_id, status_id: 'open'}, (err, data)=> {
-        this.issues = data.issues.reduce((obj, issue)=>{
-          obj[issue.id] = issue
-          return obj
-        }, {})
-      })
-    },
-    fetchProjects(){
-      try{
-        const client = this.createRedmineClient()
-        client.projects({include: "time_entry_activities"}, (err, data)=> {
-          this.projects = data.projects.reduce((obj, project)=>{
-            obj[project.id] = project
-            return obj
-          }, {})
-        })
-        this.selectedIssueId = null
-      }catch(err){
-        // console.log(err)
-      }
-    }
   }
 }
 </script>

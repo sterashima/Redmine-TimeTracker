@@ -2,11 +2,11 @@
   <div id="app">
     <v-app light>
       <v-toolbar app>
-        <v-toolbar-items>
-          <v-btn icon :to="{path: 'timetracking'}"><v-icon color="red">alarm</v-icon></v-btn>
-          <v-btn icon :to="{path: 'setting'}" ><v-icon color="red">settings</v-icon></v-btn>
-          <v-btn icon :to="{path: 'analysis'}"><v-icon color="red">show_chart</v-icon></v-btn>
-        </v-toolbar-items>
+        <v-btn icon :to="{path: 'timetracking'}"><v-icon color="red">alarm</v-icon></v-btn>
+        <v-btn icon :to="{path: 'setting'}" ><v-icon color="red">settings</v-icon></v-btn>
+        <v-btn icon :to="{path: 'analysis'}"><v-icon color="red">show_chart</v-icon></v-btn>
+        <v-spacer></v-spacer>
+        <v-btn icon><v-icon color="black">autorenew</v-icon></v-btn>
       </v-toolbar>
       <v-content>
         <v-container fluid>

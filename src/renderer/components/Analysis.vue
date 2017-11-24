@@ -33,36 +33,21 @@
 </template>
 
 <script>
-import RedmineMixin from '@/mixins/RedmineClient'
+import { createNamespacedHelpers } from 'vuex'
+const { mapState, mapActions } = createNamespacedHelpers('TimeEntries')
+
 export default {
   name: 'analysis',
-  mixins:[RedmineMixin],
   mounted(){
-    const client = this.createRedmineClient()
-    client.time_entries({}, (err, data)=>{
-      this.timeEntriesByDate = data.time_entries.map((timeEntry)=>{
-        const parsedComment = this.commentParse(timeEntry.comments)
-        return {
-          project: timeEntry.project.name,
-          issue: (timeEntry.issue) ? timeEntry.issue.id : '',
-          user: timeEntry.user.name,
-          date: timeEntry.spent_on,
-          activity: timeEntry.activity.name,
-          hours: timeEntry.hours,
-          from: parsedComment.from,
-          to: parsedComment.to,
-          comment: parsedComment.comment
-        }
-      }).reduce((obj, timeEntry)=>{
-        if(!obj[timeEntry.date]) obj[timeEntry.date] = []
-        obj[timeEntry.date].push(timeEntry)
-        return obj
-      }, {})
+    this.updateTimeEntries()
+  },
+  computed:{
+    ...mapState({
+      timeEntriesByDate: state => state.timeEntriesByDate
     })
   },
   data(){
     return {
-      timeEntriesByDate: {},
       headers: [
         { text: 'Project', value: 'project'},
         { text: 'Issue', value: 'issue'},
@@ -77,39 +62,14 @@ export default {
   },
   components: {  },
   methods: {
+    ...mapActions([
+      'updateTimeEntries'
+    ]),
     sumTimes(timeEntries){
       return timeEntries.reduce((sum, entry)=>{
         return sum + entry.hours
       } ,0)
     },
-    commentParse(comment){
-      if(!comment){
-        return {
-          from: '',
-          to: '',
-          comment: ''
-        }
-      }
-      let match;
-      if(match = comment.match(/(^.*)(\{\"from\".+?\})(.*)/)){
-        const time = JSON.parse(match[2])
-        const from = new Date(time.from)
-        const to = new Date(time.to)
-        return {
-          from: `${from.toDateString()} ${from.toTimeString()}`,
-          to: `${to.toDateString()} ${to.toTimeString()}`,
-          comment: match[1] + match[3]
-        }  
-      }
-      return {
-        from: '',
-        to: '',
-        comment: comment
-      }
-    },
-    open (link) {
-      this.$electron.shell.openExternal(link)
-    }
   }
 }
 </script>

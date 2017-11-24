@@ -33,17 +33,13 @@ const mutations = {
     },
 }
 
-const actions = {
-    someAsyncTask ({ commit }) {
-        // do something async
-        commit('INCREMENT_MAIN_COUNTER')
-    }
-}
+const actions = {}
+
 
 export default {
     namespaced: true,
     state,
     mutations,
-    actions
+    actions,
 }
   
