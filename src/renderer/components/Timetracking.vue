@@ -92,10 +92,39 @@ export default {
       alartMessage: ""
     }
   },
+  watch:{
+    projectsError: function(val){
+      if(val == '') return
+      this.alartMessage = `(Error ${val})`
+      this.alartColor = "error"
+      this.alartIsShow = true
+    },
+    issuesError: function(val){
+      if(val == '') return
+      this.alartMessage = `(Error ${val})`
+      this.alartColor = "error"
+      this.alartIsShow = true
+    },
+    projects: function (val){
+      if(val.length == 0) return
+      this.alartMessage = "Projectを更新しました"
+      this.alartColor = "success"
+      this.alartIsShow = true
+    },
+    _issues: function (val){
+      if(val.length == 0) return
+      this.alartMessage = "Issueを更新しました"
+      this.alartColor = "success"
+      this.alartIsShow = true
+    },
+
+  },
   computed:{
     ...mapState({
       projects: state => state.projects,
       _issues: state => state.issues,
+      projectsError: state => state.projectsError,
+      issuesError: state => state.issuesError,
     }),
     isTrackingReady(){
       return !!this.selectedProjectId && !!this.selectedActivityId

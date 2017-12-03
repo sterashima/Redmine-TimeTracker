@@ -1,9 +1,12 @@
 import {remote} from 'electron'
+import { setTimeout } from 'timers';
 const Redmine = remote.require('node-redmine')
 
 const state = {
     projects: {},
-    issues: {}
+    issues: {},
+    projectsError:  "",
+    issuesError: "",
 }
 
 const mutations = {
@@ -12,7 +15,13 @@ const mutations = {
     },
     SET_ISSUES (state, issues){
         state.issues = issues
-    }
+    },
+    SET_PROJECTS_ERROR (state, error){
+        state.projectsError = error
+    },
+    SET_ISSUES_ERROR (state, error){
+        state.issuesError = error
+    },
 }
 
 const actions = {
@@ -32,14 +41,28 @@ const actions = {
         try{
             const client = new Redmine(rootState.Setting.url, config);
             client.projects({include: "time_entry_activities"}, (err, data)=> {
-              const projects = data.projects.reduce((obj, project)=>{
+                if(err){
+                    commit("SET_PROJECTS_ERROR", err)
+                    setTimeout(()=>{
+                        commit("SET_PROJECTS_ERROR", "")
+                    }, 1000)
+                    return 
+                } 
+                const projects = data.projects.reduce((obj, project)=>{
                     obj[project.id] = project
                     return obj
-              }, {})
-              commit('SET_PROJECTS', projects)
+                }, {})
+                commit('SET_PROJECTS', projects)
             })
 
             client.issues({status_id: 'open'}, (err, data)=> {
+                if(err){
+                    commit("SET_ISSUES_ERROR", err)
+                    setTimeout(()=>{
+                        commit("SET_ISSUES_ERROR", "")
+                    }, 10)
+                    return 
+                } 
                 const issues = data.issues.reduce((obj, issue)=>{
                     obj[issue.id] = issue
                     return obj

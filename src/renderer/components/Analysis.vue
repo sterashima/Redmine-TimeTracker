@@ -29,6 +29,14 @@
         </v-expansion-panel>
       </v-flex>
     </v-layout>
+    <v-snackbar
+      :timeout="6000"
+      :color="alartColor"
+      :top="true"
+      v-model="alartIsShow"
+      >{{alartMessage}}
+      <v-btn flat @click.native="alartIsShow = false">Close</v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -42,7 +50,8 @@ export default {
   },
   computed:{
     ...mapState('TimeEntries', {
-      timeEntriesByDate: state => state.timeEntriesByDate
+      timeEntriesByDate: state => state.timeEntriesByDate,
+      error: state => state.error,
     }),
     ...mapState('Projects', {
       issues: state => state.issues
@@ -60,6 +69,15 @@ export default {
         { text: 'To', value: 'to' },
         { text: 'Comment', value: 'comment' },
       ],
+
+      alartColor: "error",
+      alartIsShow: false,
+      alartMessage: ""
+    }
+  },
+  watch: {
+    error: function(val){
+      this.alartMessage = val
     }
   },
   components: {  },

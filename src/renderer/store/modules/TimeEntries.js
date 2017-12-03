@@ -30,12 +30,16 @@ const commentParse = (comment)=>{
 
 
 const state = {
-    timeEntriesByDate: {}
+    timeEntriesByDate: {},
+    error: ''
 }
 
 const mutations = {
     SET_TIME_ENTRIES_BY_DATE (state, timeEntriesByDate) {
         state.timeEntriesByDate = timeEntriesByDate
+    },
+    TIME_ENTRIES_ERROR(state, err){
+        state.error = err
     }
 }
 
@@ -55,6 +59,13 @@ const actions = {
         }
         const client = new Redmine(rootState.Setting.url, config);
         client.time_entries({}, (err, data)=>{
+            if(err){
+                commit("TIME_ENTRIES_ERROR", err)
+                setTimeout(()=>{
+                    commit("TIME_ENTRIES_ERROR", "")
+                }, 1000)
+                return 
+            } 
             const timeEntriesByDate = data.time_entries.map((timeEntry)=>{
                 const parsedComment = commentParse(timeEntry.comments)
                 return {
